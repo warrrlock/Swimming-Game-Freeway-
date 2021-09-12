@@ -7,10 +7,12 @@ public class SwimmerMove : MonoBehaviour
     public bool TopRow;
     public bool BotRow;
     public float speed = 2.0f;
+    private SoundManager soundManager;
 
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = FindObjectOfType<SoundManager>();
         speed = Random.Range(1.0f, 5.0f);
     }
 
@@ -24,6 +26,14 @@ public class SwimmerMove : MonoBehaviour
 
         else if (TopRow) {
             transform.position += transform.right * -speed * Time.deltaTime;
+        }
+
+        if (!soundManager.isPlaying("effect"))
+        {
+            if (distanceFromPlayer() < 20)
+            {
+                soundManager.playSound(soundManager.getClip("swim1"), "effect");
+            }
         }
         
     }
@@ -41,5 +51,17 @@ public class SwimmerMove : MonoBehaviour
             Debug.Log("p2 knock");
         }
 
+    }
+
+    public float distanceFromPlayer()
+    {
+        if (Vector2.Distance(gameObject.transform.position, FindObjectOfType<P1Control>().gameObject.transform.position) >
+            Vector2.Distance(gameObject.transform.position, FindObjectOfType<P2Control>().gameObject.transform.position))
+        {
+            return Vector2.Distance(gameObject.transform.position, FindObjectOfType<P1Control>().gameObject.transform.position);
+        } else
+        {
+            return Vector2.Distance(gameObject.transform.position, FindObjectOfType<P2Control>().gameObject.transform.position);
+        }
     }
 }
